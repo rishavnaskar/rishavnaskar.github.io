@@ -55,7 +55,7 @@ export default function CalendlyButton({
       : "border border-border bg-surface/50 text-fg hover:-translate-y-0.5 hover:border-accent hover:text-accent";
 
   return (
-    <button type="button" onClick={open} className={cn(base, styles, className)}>
+    <button type="button" onClick={open} data-track="book_call" className={cn(base, styles, className)}>
       {children}
       <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
     </button>

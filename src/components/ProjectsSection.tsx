@@ -20,7 +20,13 @@ export default function ProjectsSection() {
           const linked = Boolean(p.href);
           const Wrapper = (linked ? "a" : "div") as "a" | "div";
           const wrapperProps = linked
-            ? { href: p.href, target: "_blank", rel: "noopener noreferrer" }
+            ? {
+                href: p.href,
+                target: "_blank",
+                rel: "noopener noreferrer",
+                "data-track": "project_click",
+                "data-track-label": p.title,
+              }
             : {};
           return (
             <Reveal key={p.title} delay={(i % 2) * 0.08}>
