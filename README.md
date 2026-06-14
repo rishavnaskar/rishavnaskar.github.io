@@ -1,21 +1,60 @@
-![Cool badge](https://img.shields.io/badge/Rishav-Portolio-blue)
+# rishavnaskar.github.io
 
-## Hi there!
+Personal portfolio of **Rishav Naskar** — fullstack software engineer (AI · Mobile · Frontend · Backend). A premium, fully-responsive single-page site built with **Next.js**.
 
-**Welcome to my Portfolio Website!** You can know all about me from here.
+🔗 **Live:** https://rishavnaskar.github.io
 
-## Steps to run
+## Stack
 
-* Simply clone the repo
-* Open using any editor like *VS Code, Brackets, etc.*
-* Open the *index.html* file
+- **Next.js 16** (App Router) + **React 19** + **TypeScript**
+- **Tailwind CSS v4** (`@theme` design tokens) for styling
+- **Framer Motion** for animation — scroll reveals use `whileInView` (IntersectionObserver, GPU transforms only), so scrolling stays smooth
+- **React Three Fiber + three.js** for the ambient particle hero (contained to the hero and **paused when off-screen** for performance)
+- **lucide-react** icons
+- Statically exported (`output: "export"`) and hosted on **GitHub Pages**
 
-## How it looks
+## Features
 
-About me             |  My Experience
-:-------------------------:|:-------------------------:
-![image](https://user-images.githubusercontent.com/59786899/126878741-6deceaaf-7059-41a1-9a36-86a1f088bee9.png)  |  ![image](https://user-images.githubusercontent.com/59786899/126878753-73c40a00-df78-4655-bf74-d8a3b22f27ed.png)
+- **Automatic light / dark** — follows OS `prefers-color-scheme` with a manual toggle persisted to `localStorage` (no flash of wrong theme).
+- **WebGL particle hero** — theme-aware, mouse-reactive, render loop paused when scrolled past or the tab is hidden.
+- **Motion** — kinetic role rotator, staggered hero entrance, scroll reveals, 3D tilt cards, animated counters, infinite marquee.
+- **Book a call** — Calendly popup integration (lazy-loaded, with link fallback).
+- **SEO** — metadata, Open Graph/Twitter cards, JSON-LD, sitemap-friendly static HTML.
+- **Accessible & robust** — `prefers-reduced-motion` honored, print stylesheet, no horizontal overflow at any breakpoint.
 
-<p align="center">
-	Show some love and star the repo :heart: </a>
-</p>
+## Project structure
+
+```
+src/
+  app/
+    layout.tsx        # fonts, metadata, theme provider, no-flash script
+    page.tsx          # composes the sections
+    globals.css       # Tailwind v4 @theme tokens + light/dark + utilities
+    not-found.tsx     # branded 404
+    icon.svg          # gradient "RN" favicon
+    manifest.ts
+  components/          # Navbar, Hero, Hero3D, sections, Reveal, TiltCard, …
+  lib/
+    site.ts           # central identity/contact config
+    data.ts           # experience, projects, skills, achievements
+    utils.ts          # cn()
+```
+
+## Develop
+
+```bash
+npm install
+npm run dev      # http://localhost:3003
+```
+
+## Build & deploy
+
+```bash
+npm run build    # static export → ./out
+```
+
+Deployment is automated: pushing to `master` triggers `.github/workflows/deploy.yml`, which builds the static export and publishes it to GitHub Pages. (Set **Settings → Pages → Source → GitHub Actions** once.)
+
+---
+
+© Rishav Naskar · San Francisco, CA
