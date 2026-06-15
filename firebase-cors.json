@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["*"],
+    "method": ["GET"],
+    "responseHeader": ["Content-Type", "Content-Length", "Content-Range", "Range", "Accept-Ranges"],
+    "maxAgeSeconds": 3600
+  }
+]

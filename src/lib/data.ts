@@ -201,4 +201,5 @@ export const HIGHLIGHTS = [
   { icon: "MapPin", label: "Based in", text: "San Francisco, California" },
   { icon: "GraduationCap", label: "B.Tech CSE", text: "Vellore Institute of Technology · 8.42 CGPA" },
   { icon: "Trophy", label: "2× hackathon winner", text: "Open-source contributor (5.8k★)" },
+  { icon: "Music", label: "Hobbies", text: "I play the drums · Driving makes me feel alive" },
 ] as const;

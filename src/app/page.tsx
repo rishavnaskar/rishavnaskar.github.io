@@ -6,6 +6,7 @@ import ExperienceSection from "@/components/ExperienceSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import SkillsSection from "@/components/SkillsSection";
 import PlaygroundSection from "@/components/PlaygroundSection";
+import HobbiesSection from "@/components/HobbiesSection";
 import AchievementsSection from "@/components/AchievementsSection";
 import ContactSection from "@/components/ContactSection";
 
@@ -21,6 +22,7 @@ export default function Home() {
       <SkillsSection />
       <ExperienceSection />
       <PlaygroundSection />
+      <HobbiesSection />
       <ContactSection />
     </>
   );

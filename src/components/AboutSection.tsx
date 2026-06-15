@@ -1,9 +1,9 @@
-import { Briefcase, GraduationCap, MapPin, Trophy } from "lucide-react";
+import { Briefcase, GraduationCap, MapPin, Music, Trophy } from "lucide-react";
 import { HIGHLIGHTS } from "@/lib/data";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 
-const ICONS = { Briefcase, MapPin, GraduationCap, Trophy } as const;
+const ICONS = { Briefcase, MapPin, GraduationCap, Trophy, Music } as const;
 
 export default function AboutSection() {
   return (
@@ -34,6 +34,13 @@ export default function AboutSection() {
             <p>
               I care about the seam where <strong className="font-semibold text-fg">craft meets performance</strong>:
               60fps interactions, clean architecture, reusable SDKs, and AI that actually ships to production.
+            </p>
+            <p>
+              Away from the keyboard, I’ve been a{" "}
+              <strong className="font-semibold text-fg">drummer for over 12 years</strong> — the timing and feel carry
+              straight back into how I build — and you’ll usually find me{" "}
+              <strong className="font-semibold text-fg">out on a long drive</strong>, which is where most of my best
+              ideas show up.
             </p>
           </div>
         </Reveal>

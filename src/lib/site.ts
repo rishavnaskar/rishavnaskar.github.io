@@ -32,5 +32,6 @@ export const NAV_LINKS = [
   { href: "#skills", label: "Skills" },
   { href: "#experience", label: "Experience" },
   { href: "#playground", label: "Playground" },
+  { href: "#hobbies", label: "Hobbies" },
   { href: "#contact", label: "Contact" },
 ] as const;
