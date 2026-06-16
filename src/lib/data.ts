@@ -120,13 +120,6 @@ export const PROJECTS: Project[] = [
     meta: "3 apps · In production",
   },
   {
-    title: "Advanced Task Manager",
-    emoji: "🗂️",
-    href: "https://github.com/rishavnaskar/oolka-task",
-    desc: "A powerful task-management tool to track work, manage time and boost productivity with a clean, intuitive UI.",
-    tags: ["React Native", "TypeScript", "Figma"],
-  },
-  {
     title: "AniHelp",
     emoji: "🐾",
     href: "https://github.com/rishavnaskar/AniHelp",
@@ -179,9 +172,9 @@ export const FEATURED: Feature[] = [
   {
     kicker: "Entrepreneurship",
     title: "PoolCar",
-    stat: "20+",
-    statLabel: "school partnerships in the pipeline",
-    desc: "Founded and built PoolCar, a digital aggregator connecting parents with verified private van operators for safe daily school commutes. Drove early traction through merchant and parent onboarding — building a pipeline of 20+ school partnerships across Kolkata.",
+    stat: "40+",
+    statLabel: "school vans in the pipeline",
+    desc: "Founded and built PoolCar, a digital aggregator connecting parents with verified private van operators for safe daily school commutes. Validated initial traction through merchant and parent onboarding — building a pipeline of 40+ school vans across Kolkata.",
     icon: "Bus",
     tags: ["Founder", "0 → 1 product", "Two-sided marketplace", "Mobility"],
   },

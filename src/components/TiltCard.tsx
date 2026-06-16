@@ -37,7 +37,7 @@ export default function TiltCard({
 
   return (
     <motion.div
-      className={cn("group relative [transform-style:preserve-3d]", className)}
+      className={cn("group relative", className)}
       style={{ rotateX, rotateY, perspective: 1000 }}
       onPointerMove={(e) => {
         const r = e.currentTarget.getBoundingClientRect();
