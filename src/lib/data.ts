@@ -44,7 +44,7 @@ export const EXPERIENCE: Experience[] = [
   {
     company: "Fig AI",
     role: "AI Engineer (React Native)",
-    period: "Jan 2026 — Present",
+    period: "Nov 2025 — Present",
     location: "San Francisco, USA · Remote",
     badge: "Current",
     current: true,
@@ -55,7 +55,7 @@ export const EXPERIENCE: Experience[] = [
   {
     company: "Kotak Mahindra Bank (811)",
     role: "Software Development Engineer",
-    period: "Oct 2024 — Dec 2025",
+    period: "Oct 2024 — Jul 2026",
     location: "Bengaluru, India",
     badge: "Full-time",
     summary:
