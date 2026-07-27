@@ -13,9 +13,9 @@ export const SITE = {
   shortBio:
     "Fullstack software engineer shipping production AI agents, high-performance React Native apps and scalable backends. Currently an AI Engineer at Fig AI.",
   description:
-    "Rishav Naskar is a fullstack software engineer in San Francisco building production AI agents, high-performance React Native apps, native Android/iOS bridges and scalable backends. Currently an AI Engineer at Fig AI — previously Kotak 811, Groww and Agora.",
+    "Rishav Naskar is a fullstack software engineer in Bengaluru, India building production AI agents, high-performance React Native apps, native Android/iOS bridges and scalable backends. Currently an AI Engineer at Fig AI — previously Kotak 811, Groww and Agora.",
   url: "https://rishavnaskar.github.io",
-  location: "San Francisco, California",
+  location: "Bengaluru, India",
   email: "rishavnaskar.r@gmail.com",
   calendly: "https://calendly.com/rishavnaskar/quick_discussion",
   resumeNote: "Open to building something great",

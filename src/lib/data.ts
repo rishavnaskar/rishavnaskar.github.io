@@ -120,19 +120,12 @@ export const PROJECTS: Project[] = [
     meta: "3 apps · In production",
   },
   {
-    title: "AniHelp",
-    emoji: "🐾",
-    href: "https://github.com/rishavnaskar/AniHelp",
-    desc: "Virtual pet-adoption app connecting users with shelter animals through an NGO intermediary. Winner of HackMol 2.0 among 500+ participants.",
-    tags: ["Flutter", "Firebase", "Figma"],
-    award: "Hackathon winner",
-  },
-  {
-    title: "Gidget",
-    emoji: "⚙️",
-    href: "https://github.com/rishavnaskar/gidget",
-    desc: "An Android widget + app integrating the GitHub API for real-time repo insights, issues, PRs and home-screen notifications.",
-    tags: ["Kotlin", "Java", "Android", "GitHub API"],
+    title: "Local-First LLM Orchestration",
+    emoji: "📱",
+    href: "https://github.com/rishavnaskar/local-llm-project",
+    desc: "An on-device LLM stack built measurement-first: a Swift SDK running llama.cpp in-process on iOS and macOS, a profiler that picks the right model for the hardware it finds, and hybrid local/cloud routing priced against real latency and battery budgets. Every constant traces to an experiment — 52 findings across a fanless MacBook Air, an x86 + NVIDIA laptop and an iPhone, including the ones that disproved my own earlier conclusions.",
+    tags: ["Swift", "llama.cpp", "iOS", "Python", "On-device AI", "Benchmarking"],
+    meta: "Open source · 3 devices measured",
   },
 ];
 
