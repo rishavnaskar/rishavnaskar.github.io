@@ -120,10 +120,10 @@ export const PROJECTS: Project[] = [
     meta: "3 apps · In production",
   },
   {
-    title: "Local-First LLM Orchestration",
+    title: "Offline AI on Mac & iPhone",
     emoji: "📱",
     href: "https://github.com/rishavnaskar/local-llm-project",
-    desc: "An on-device LLM stack built measurement-first: a Swift SDK running llama.cpp in-process on iOS and macOS, a profiler that picks the right model for the hardware it finds, and hybrid local/cloud routing priced against real latency and battery budgets. Every constant traces to an experiment — 52 findings across a fanless MacBook Air, an x86 + NVIDIA laptop and an iPhone, including the ones that disproved my own earlier conclusions.",
+    desc: "An AI assistant that runs entirely on your Mac or iPhone. No internet, no API bill, and nothing you type ever leaves the device — which matters most for the personal writing people paste into chatbots without thinking. A Swift SDK runs llama.cpp in-process, picks a model that fits the hardware it finds, and calls the cloud only when a request is genuinely too slow or too battery-expensive to answer locally. Built measurement-first: a benchmark harness produced 52 documented findings across three real devices, including the ones that disproved my own earlier conclusions.",
     tags: ["Swift", "llama.cpp", "iOS", "Python", "On-device AI", "Benchmarking"],
     meta: "Open source · 3 devices measured",
   },
