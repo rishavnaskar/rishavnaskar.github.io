@@ -39,7 +39,7 @@ export default function Footer() {
 
         <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6 font-mono text-sm text-faint">
           <span>
-            © {year} {SITE.name} · San Francisco, CA
+            © {year} {SITE.name} · Bengaluru, India
           </span>
           <div className="flex gap-2.5">
             {SOCIALS.map(({ href, label, Icon }) => (

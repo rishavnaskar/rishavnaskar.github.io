@@ -184,7 +184,7 @@ export const ACHIEVEMENTS: Achievement[] = [
 
 export const HIGHLIGHTS = [
   { icon: "Briefcase", label: "Now", text: "AI Engineer @ Fig AI · San Francisco (Remote)" },
-  { icon: "MapPin", label: "Based in", text: "San Francisco, California" },
+  { icon: "MapPin", label: "Based in", text: "Bengaluru, India" },
   { icon: "GraduationCap", label: "B.Tech CSE", text: "Vellore Institute of Technology · 8.42 CGPA" },
   { icon: "Trophy", label: "2× hackathon winner", text: "Open-source contributor (5.8k★)" },
   { icon: "Music", label: "Hobbies", text: "I play the drums · Driving makes me feel alive" },
