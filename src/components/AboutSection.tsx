@@ -19,10 +19,14 @@ export default function AboutSection() {
           </p>
           <div className="mt-8 space-y-5 text-muted">
             <p>
-              Today at <strong className="font-semibold text-fg">Fig AI</strong> I architect multi-agent systems on{" "}
-              <strong className="font-semibold text-fg">LangGraph + FastAPI + Claude</strong>, build SSE streaming
-              pipelines, and wire it all into a <strong className="font-semibold text-fg">React Native</strong> client
-              with real-time block protocols, multimodal attachments and Stripe payments.
+              Today at <strong className="font-semibold text-fg">Fig AI</strong> I architect{" "}
+              <strong className="font-semibold text-fg">Stella</strong> — one{" "}
+              <strong className="font-semibold text-fg">LangGraph + FastAPI + Claude</strong> plan-and-perform loop that
+              builds websites, generates media, researches the web and acts on your connected apps, fanning out to{" "}
+              <strong className="font-semibold text-fg">recursive subagents</strong> when work can run in parallel — and
+              the gateway that streams it to mobile, web, desktop and chat over a{" "}
+              <strong className="font-semibold text-fg">resumable SSE block protocol</strong>, with MCP servers, a
+              memory layer and human-in-the-loop consent gating behind it.
             </p>
             <p>
               Before that I engineered banking-grade mobile experiences at{" "}

@@ -67,7 +67,7 @@ export default function Hero() {
           Fullstack software engineer shipping <b className="font-semibold text-fg">production AI agents</b>,
           high-performance <b className="font-semibold text-fg">React&nbsp;Native</b> apps with custom native bridges,
           and <b className="font-semibold text-fg">scalable backends</b>. Currently an{" "}
-          <b className="font-semibold text-fg">AI Engineer at Fig&nbsp;AI</b> — previously Kotak&nbsp;811, Groww &amp;
+          <b className="font-semibold text-fg">Full&nbsp;Stack AI Engineer at Fig&nbsp;AI</b> — previously Kotak&nbsp;811, Groww &amp;
           Agora.
         </motion.p>
 
@@ -87,7 +87,7 @@ export default function Hero() {
           className="mt-12 flex flex-wrap gap-x-10 gap-y-4 font-mono text-xs text-faint"
         >
           {[
-            { k: "Fig AI", v: "Current — AI Engineer" },
+            { k: "Fig AI", v: "Current — Full Stack AI Engineer" },
             { k: "4+ yrs", v: "Shipping at scale" },
             { k: "10M+", v: "Users reached" },
             { k: "5.8k★", v: "Open-source impact" },

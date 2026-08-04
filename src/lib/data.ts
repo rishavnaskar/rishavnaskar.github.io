@@ -43,19 +43,19 @@ export type Experience = {
 export const EXPERIENCE: Experience[] = [
   {
     company: "Fig AI",
-    role: "AI Engineer (React Native)",
+    role: "Full Stack AI Engineer",
     period: "Nov 2025 — Present",
     location: "San Francisco, USA · Remote",
     badge: "Current",
     current: true,
     summary:
-      "Shipped production AI agents with LLM-driven workflows, structured tool-calling and real-time SSE streaming into a React Native client. Architected Stella — a multi-agent orchestrator on LangGraph + FastAPI + Claude Sonnet with a hybrid ReAct + plan-and-execute graph routing intent across builder / ads / assistant sub-agents. Built an atomic block-protocol v2 event pipeline over SSE with Redis-backed turn caching and PostgreSQL LangGraph checkpointers, plus a unified multimodal attachment pipeline integrating Anthropic, Google GenAI (Veo, Lyria, Gemini), Runware, Tavily, E2B & Browserbase — bridged to RN via a NestJS Socket.io gateway. Led a full UI/UX revamp and end-to-end Stripe checkout + wallet.",
-    tags: ["LangGraph", "FastAPI", "Claude", "MCP", "SSE", "Redis", "PostgreSQL", "React Native", "NestJS", "Stripe"],
+      "Architected Stella, the single AI orchestrator behind Fig's one-chat-box product — a LangGraph plan-and-perform loop on FastAPI + Claude that builds and deploys websites, generates image/video/music/slide media, researches the web and acts on the user's connected apps, all in one graph rather than a separate planner and executor. Parallelizable work is delegated to recursive subagents — the same graph re-run with a narrowed toolset and a specialized prompt — for orchestrator-worker fan-out such as deep research across ~15 sources at once. Built agent-gateway, the client edge for a React Native mobile app, a Next.js + Vite web app, an Electron desktop app and messaging channels (Telegram, SMS): Firebase auth, server-side turn lifecycle, conversation persistence and a resumable SSE turn contract (POST /turn → 202, GET /stream with Last-Event-ID) whose block.start / delta / end protocol renders text, thinking, tool and plan blocks as server-driven UI cards over Redis turn-event streams and PostgreSQL LangGraph checkpointers. Extended the platform with a modular skills framework and MCP servers for on-demand capability loading, a persistent memory and knowledge layer, Composio connectors (Gmail / Slack / Notion / Calendar), sandboxed code execution and scheduled tasks on E2B, and human-in-the-loop consent gating on high-impact actions — with model tiering (Sonnet for reasoning, Haiku / Gemini Flash for classification) and prompt caching holding down cost and latency. Led a full UI/UX revamp of the mobile app and shipped Stripe checkout, subscriptions and an in-app wallet.",
+    tags: ["LangGraph", "FastAPI", "Claude", "MCP", "Subagents", "SSE", "Redis", "PostgreSQL", "Composio", "E2B", "React Native", "Stripe"],
   },
   {
     company: "Kotak Mahindra Bank (811)",
     role: "Software Development Engineer",
-    period: "Oct 2024 — Jul 2026",
+    period: "Oct 2024 — Nov 2025",
     location: "Bengaluru, India",
     badge: "Full-time",
     summary:
@@ -108,8 +108,8 @@ export const PROJECTS: Project[] = [
   {
     title: "Stella — Agentic AI Platform",
     emoji: "🤖",
-    desc: "A production multi-agent system powering Fig's mobile app. A LangGraph + FastAPI ReAct loop on Claude Sonnet drives every turn, streaming tool calls over an SSE block-protocol with a Redis event relay and PostgreSQL checkpointers for interrupt-resume. A companion MCP server (FastMCP) exposes automation tools — web search, code execution, browser control, media generation and ad-campaign ops.",
-    tags: ["LangGraph", "FastAPI", "Claude", "MCP", "Python", "SSE", "Redis", "PostgreSQL"],
+    desc: "The single AI orchestrator behind Fig's one-chat-box product. A LangGraph plan-and-perform loop on FastAPI + Claude drives every turn — building and deploying websites, generating image/video/music/slide media, researching the web and acting on the user's connected apps, all in one graph instead of a separate planner and executor. Parallelizable work fans out to recursive subagents: the same graph re-run with a narrowed toolset and a specialized prompt, so deep research can hit ~15 sources at once with no separate worker service. Turns stream over a resumable SSE block protocol backed by Redis event streams and PostgreSQL checkpointers, and a modular skills framework plus MCP servers load capabilities on demand.",
+    tags: ["LangGraph", "FastAPI", "Claude", "MCP", "Subagents", "Python", "SSE", "Redis", "PostgreSQL"],
     meta: "Production · Fig AI",
   },
   {
@@ -176,14 +176,14 @@ export const FEATURED: Feature[] = [
 export type Achievement = { big: string; title: string; desc: string };
 
 export const ACHIEVEMENTS: Achievement[] = [
-  { big: "5.8k★", title: "Open Source", desc: "Contributed to a popular Flutter UI package (5.8k GitHub stars), plus Agora's Flutter & Android UI Kits — and authored technical blogs for Agora's extension marketplace." },
+  { big: "5.8k★", title: "Open Source", desc: "Contributor to Anthropic and to OpenHands, the open-source AI software-engineering agent — plus a popular Flutter UI package (5.8k GitHub stars) and Agora's Flutter & Android UI Kits, alongside technical blogs for Agora's extension marketplace." },
   { big: "2×", title: "Hackathon Winner", desc: "Won HackMol 2.0 (500+ participants) with AniHelp, and Ingenius Hackathon 2.0 (open-source track) with HitBeat, an AI-based beatboxing learning app." },
   { big: "8.42", title: "B.Tech CSE", desc: "Computer Science & Engineering at Vellore Institute of Technology (2019–2023), graduating with an 8.42 CGPA." },
   { big: "RTC", title: "Developer Advocacy", desc: "Authored technical blogs on AI-enabled real-time extensions — voice recognition, speech-to-text, AR filters, noise suppression — and ran university SDK sessions." },
 ];
 
 export const HIGHLIGHTS = [
-  { icon: "Briefcase", label: "Now", text: "AI Engineer @ Fig AI · San Francisco (Remote)" },
+  { icon: "Briefcase", label: "Now", text: "Full Stack AI Engineer @ Fig AI · San Francisco (Remote)" },
   { icon: "MapPin", label: "Based in", text: "Bengaluru, India" },
   { icon: "GraduationCap", label: "B.Tech CSE", text: "Vellore Institute of Technology · 8.42 CGPA" },
   { icon: "Trophy", label: "2× hackathon winner", text: "Open-source contributor (5.8k★)" },

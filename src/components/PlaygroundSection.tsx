@@ -11,7 +11,7 @@ import PareezScreen from "./playground/PareezScreen";
 const PHONES = [
   { Screen: GrowwScreen, name: "Groww", note: "UPI · Investments · QR scanner", role: "SDE @ Groww" },
   { Screen: KotakScreen, name: "Kotak 811", note: "Digital banking · native bridges", role: "SDE @ Kotak" },
-  { Screen: StellaScreen, name: "Stella", note: "Multi-agent AI · LangGraph", role: "AI Engineer @ Fig AI" },
+  { Screen: StellaScreen, name: "Stella", note: "Multi-agent AI · LangGraph", role: "Full Stack AI Engineer @ Fig AI" },
 ];
 
 function Caption({ name, note, role }: { name: string; note: string; role: string }) {
