@@ -11,9 +11,9 @@ export const SITE = {
   role: "Fullstack Software Engineer",
   tagline: "AI · Mobile · Frontend · Backend",
   shortBio:
-    "Fullstack software engineer shipping production AI agents, high-performance React Native apps and scalable backends. Currently a Full Stack AI Engineer at Fig AI.",
+    "Fullstack software engineer shipping production AI agents, high-performance React Native apps and scalable backends. Currently a Forward Deployed AI Engineer at SaxeCap.",
   description:
-    "Rishav Naskar is a fullstack software engineer in Bengaluru, India building production AI agents, high-performance React Native apps, native Android/iOS bridges and scalable backends. Currently a Full Stack AI Engineer at Fig AI — previously Kotak 811, Groww and Agora.",
+    "Rishav Naskar is a fullstack software engineer in Bengaluru, India building production AI agents, high-performance React Native apps, native Android/iOS bridges and scalable backends. Currently a Forward Deployed AI Engineer at SaxeCap — previously Fig AI, Kotak 811, Groww and Agora.",
   url: "https://rishavnaskar.github.io",
   location: "Bengaluru, India",
   email: "rishavnaskar.r@gmail.com",

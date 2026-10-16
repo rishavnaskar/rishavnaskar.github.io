@@ -29,7 +29,7 @@ export default function TiltCard({
   const rotateY = useTransform(sx, [0, 1], [-intensity, intensity]);
   const glowX = useTransform(sx, [0, 1], ["0%", "100%"]);
   const glowY = useTransform(sy, [0, 1], ["0%", "100%"]);
-  const background = useMotionTemplate`radial-gradient(420px circle at ${glowX} ${glowY}, color-mix(in srgb, var(--color-violet) 22%, transparent), transparent 60%)`;
+  const background = useMotionTemplate`radial-gradient(420px circle at ${glowX} ${glowY}, color-mix(in srgb, var(--color-ember) 22%, transparent), transparent 60%)`;
 
   if (reduce) {
     return <div className={cn("relative", className)}>{children}</div>;

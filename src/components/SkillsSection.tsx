@@ -1,8 +1,7 @@
 import { Activity, Boxes, Code2, Database, MonitorSmartphone, Smartphone, Sparkles, Wand2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { SKILLS } from "@/lib/data";
-import Reveal from "./Reveal";
-import SectionHeading from "./SectionHeading";
+import { Rise, SectionHead } from "./ui";
 
 const ICONS: Record<string, LucideIcon> = {
   Smartphone,
@@ -17,35 +16,49 @@ const ICONS: Record<string, LucideIcon> = {
 
 export default function SkillsSection() {
   return (
-    <section id="skills" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-20 lg:px-8 lg:py-28">
-      <SectionHeading eyebrow="04 — Toolkit" title="The stack I" accent="build with." />
+    <section
+      id="skills"
+      className="relative scroll-mt-24 border-t border-paper-line bg-paper-warm/50 py-14 sm:py-20 lg:py-24"
+    >
+      <div className="shell">
+        <SectionHead
+          eyebrow="03 — Toolkit"
+          headline="The stack I build with."
+          lede="Eight years of accumulated tools, grouped by the job they do rather than by how impressive they sound."
+        />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {SKILLS.map((g, i) => {
-          const Icon = ICONS[g.icon] ?? Code2;
-          return (
-            <Reveal key={g.title} delay={(i % 4) * 0.06}>
-              <div className="card h-full rounded-2xl p-6 transition-transform duration-300 hover:-translate-y-1 hover:border-accent/40">
-                <div className="mb-5 flex items-center gap-3">
-                  <span className="grid size-9 place-items-center rounded-xl border border-border bg-surface-2 text-accent">
-                    <Icon className="size-5" />
-                  </span>
-                  <h3 className="font-display text-base font-semibold">{g.title}</h3>
+        {/* One hairline grid from `sm` up — the cell gaps are the parent
+            background showing through a 1px gutter, so there are no borders to
+            double up at the seams. Below `sm` the eight cells would stack to
+            three screens, so there it becomes a horizontal snap rail with the
+            next card left peeking. */}
+        <div className="rail-m mt-10 sm:mt-14 sm:grid sm:gap-px sm:overflow-hidden sm:rounded-2xl sm:border sm:border-paper-line sm:bg-paper-line sm:grid-cols-2 lg:grid-cols-4">
+          {SKILLS.map((g, i) => {
+            const Icon = ICONS[g.icon] ?? Code2;
+            return (
+              <Rise
+                key={g.title}
+                delay={i % 4}
+                className="group rounded-2xl border border-paper-line bg-paper-raised p-6 transition-colors duration-500 hover:bg-paper sm:rounded-none sm:border-0"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Icon className="size-[18px] shrink-0 text-ember" />
+                  <h3 className="text-[1.02rem] tracking-[-0.02em]">{g.title}</h3>
                 </div>
-                <ul className="flex flex-wrap gap-2">
+                <ul className="mt-4 flex flex-wrap gap-1.5">
                   {g.items.map((it) => (
                     <li
                       key={it}
-                      className="rounded-lg bg-surface-2 px-2.5 py-1 font-mono text-xs text-muted transition-colors hover:text-accent"
+                      className="rounded-full bg-fg/[0.05] px-2.5 py-1 font-mono text-[0.7rem] text-graphite"
                     >
                       {it}
                     </li>
                   ))}
                 </ul>
-              </div>
-            </Reveal>
-          );
-        })}
+              </Rise>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

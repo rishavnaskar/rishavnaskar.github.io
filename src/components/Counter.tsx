@@ -1,9 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useInView, useReducedMotion } from "framer-motion";
 
-/** Counts up to `value` once it scrolls into view (IntersectionObserver-based). */
+/**
+ * Counts up to `value` once it scrolls into view.
+ *
+ * Renders the FINAL number on the server and starts from zero only after JS
+ * has decided to animate. The obvious implementation — state initialised to 0
+ * — exports "0" into the static HTML, so every metric on the page reads zero
+ * to a crawler, to a reader with JS off, and for however long hydration takes.
+ * Here the number is correct from first paint and the count-up is the
+ * enhancement on top.
+ */
 export default function Counter({
   value,
   decimals = 0,
@@ -14,19 +22,17 @@ export default function Counter({
   format?: (n: number) => string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
-  const reduce = useReducedMotion();
-  const [display, setDisplay] = useState(0);
+  const [display, setDisplay] = useState(value);
 
   useEffect(() => {
-    if (!inView) return;
-    if (reduce) {
-      setDisplay(value);
-      return;
-    }
-    const duration = 1500;
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     let raf = 0;
     let start: number | null = null;
+    const duration = 1500;
+
     const tick = (t: number) => {
       if (start === null) start = t;
       const p = Math.min((t - start) / duration, 1);
@@ -35,9 +41,23 @@ export default function Counter({
       if (p < 1) raf = requestAnimationFrame(tick);
       else setDisplay(value);
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [inView, value, reduce]);
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+        setDisplay(0);
+        raf = requestAnimationFrame(tick);
+      },
+      { rootMargin: "0px 0px -40px 0px" },
+    );
+    io.observe(el);
+
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  }, [value]);
 
   return <span ref={ref}>{format ? format(display) : display.toFixed(decimals)}</span>;
 }

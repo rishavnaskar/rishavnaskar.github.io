@@ -14,19 +14,19 @@ export default function StellaScreen() {
   return (
     <div className="relative flex h-full flex-col bg-[#0a0912] text-white">
       {/* ambient glow */}
-      <div className="pointer-events-none absolute -top-10 right-0 size-40 rounded-full bg-violet/30 blur-3xl" />
+      <div className="pointer-events-none absolute -top-10 right-0 size-40 rounded-full bg-ember/30 blur-3xl" />
       <StatusBar dark />
 
       {/* header */}
       <div className="relative flex items-center gap-2.5 px-4 pt-1 pb-3">
-        <span className="relative grid size-8 place-items-center rounded-full bg-gradient-to-br from-violet to-cyan">
-          <span className="absolute inset-0 animate-pulse-ring rounded-full bg-violet/50" />
+        <span className="relative grid size-8 place-items-center rounded-full bg-gradient-to-br from-ember to-ember-lit">
+          <span className="absolute inset-0 animate-pulse-ring rounded-full bg-ember/50" />
           <span className="size-2.5 rounded-full bg-white/90" />
         </span>
         <div>
           <p className="text-[12px] font-bold">Stella</p>
           <p className="flex items-center gap-1 text-[8px] text-white/55">
-            <span className="size-1.5 rounded-full bg-lime" /> AI Agent · automating
+            <span className="size-1.5 rounded-full bg-[#3fb950]" /> AI Agent · automating
           </p>
         </div>
       </div>
@@ -34,7 +34,7 @@ export default function StellaScreen() {
       <div className="relative flex-1 space-y-2.5 overflow-hidden px-3">
         {/* user message */}
         <motion.div
-          className="ml-auto w-fit max-w-[80%] rounded-2xl rounded-br-md bg-gradient-to-r from-violet to-violet-bright px-3 py-1.5 text-[10px] font-medium"
+          className="ml-auto w-fit max-w-[80%] rounded-2xl rounded-br-md bg-gradient-to-r from-ember to-ember-lit px-3 py-1.5 text-[10px] font-medium"
           initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -51,7 +51,7 @@ export default function StellaScreen() {
           transition={{ delay: 0.25 }}
         >
           On it — drafting your schedule and wiring up the automations
-          <span className="ml-0.5 inline-block h-3 w-[2px] translate-y-0.5 animate-blink bg-accent" />
+          <span className="ml-0.5 inline-block h-3 w-[2px] translate-y-0.5 animate-blink bg-ember-lit" />
         </motion.div>
 
         {/* tool-call card */}
@@ -63,7 +63,7 @@ export default function StellaScreen() {
           transition={{ delay: 0.5 }}
         >
           <div className="mb-2 flex items-center justify-between">
-            <span className="flex items-center gap-1 text-[9px] font-bold text-accent">⚡ Automation running</span>
+            <span className="flex items-center gap-1 text-[9px] font-bold text-ember-lit">⚡ Automation running</span>
             <span className="font-mono text-[8px] text-white/45">2/3</span>
           </div>
           <div className="space-y-1.5">
@@ -79,7 +79,7 @@ export default function StellaScreen() {
                 <span
                   className={
                     "grid size-4 place-items-center rounded-full " +
-                    (s.done ? "bg-cyan text-[#04121a]" : s.active ? "text-accent" : "text-white/30")
+                    (s.done ? "bg-ember-lit text-[#1a0a04]" : s.active ? "text-ember-lit" : "text-white/30")
                   }
                 >
                   {s.done ? (
@@ -100,7 +100,7 @@ export default function StellaScreen() {
       {/* input bar */}
       <div className="relative m-3 flex items-center gap-2 rounded-full bg-white/[0.06] px-3 py-2 ring-1 ring-white/10">
         <span className="flex-1 text-[9px] text-white/40">Ask Stella anything…</span>
-        <span className="grid size-6 place-items-center rounded-full bg-gradient-to-r from-violet to-cyan">
+        <span className="grid size-6 place-items-center rounded-full bg-gradient-to-r from-ember to-ember-lit">
           <ArrowUp className="size-3.5" strokeWidth={2.5} />
         </span>
       </div>

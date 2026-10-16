@@ -1,11 +1,16 @@
 "use client";
 
+/* eslint-disable react-hooks/immutability --
+   The renderer, scene and shadow map that `useThree` hands back are three.js
+   objects meant to be configured imperatively, and `useFrame` runs on the
+   WebGL loop rather than during a React render. */
+
 import { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 import { useReducedMotion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { LoadingOverlay, Pill, StageFrame } from "./StageShell";
 
 /* =====================================================================
    HobbyCanvas — a reusable, mobile-friendly WebGL stage.
@@ -73,20 +78,6 @@ function FreezeShadows({ enabled }: { enabled: boolean }) {
   return null;
 }
 
-/** Small status badge used by the loading / failed / drag-hint overlays. */
-function Pill({ children, tone = "muted" }: { children: React.ReactNode; tone?: "muted" | "faint" }) {
-  return (
-    <div
-      className={cn(
-        "flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1.5 font-mono text-[0.6rem] tracking-wide uppercase backdrop-blur",
-        tone === "faint" ? "text-faint" : "text-muted",
-      )}
-    >
-      {children}
-    </div>
-  );
-}
-
 export default function HobbyCanvas({
   children,
   camera = [4.5, 2.4, 5.5],
@@ -134,10 +125,8 @@ export default function HobbyCanvas({
   }, []);
 
   return (
-    <div
-      ref={wrapRef}
-      className="relative aspect-[4/3] w-full touch-pan-y overflow-hidden rounded-3xl border border-border bg-gradient-to-b from-surface/60 to-surface-2/40"
-    >
+    <div ref={wrapRef}>
+      <StageFrame>
       {mounted && !failed && (
         <Canvas
           shadows
@@ -162,8 +151,11 @@ export default function HobbyCanvas({
             shadow-camera-top={8}
             shadow-camera-bottom={-8}
           />
-          <pointLight position={[-7, 3, -5]} intensity={36} color="#7c5cff" />
-          <pointLight position={[7, 1.5, 6]} intensity={22} color="#22d3ee" />
+          {/* Warm key from the ember side, cool rim opposite — the same
+              light/shadow split as the page, so the models sit in the brand
+              rather than in the violet/cyan of the palette this was built on. */}
+          <pointLight position={[-7, 3, -5]} intensity={34} color="#ffb48a" />
+          <pointLight position={[7, 1.5, 6]} intensity={18} color="#d6dcf0" />
           {children}
           {/* baked once the model is on screen (keyed on `ready`) — the scene
               is static, so there's no need to re-render the contact shadow */}
@@ -176,7 +168,7 @@ export default function HobbyCanvas({
             blur={2.6}
             far={6}
             resolution={512}
-            color="#150f2e"
+            color="#1a1512"
           />
           <OrbitControls
             makeDefault
@@ -194,24 +186,13 @@ export default function HobbyCanvas({
       )}
 
       {/* loading shimmer — visible until the asset is parsed & on screen */}
-      {!ready && !failed && (
-        <div className="absolute inset-0 z-10 overflow-hidden rounded-3xl">
-          <div className="absolute inset-0 bg-surface-2/50" />
-          <div className="absolute inset-0 animate-shimmer bg-[length:200%_100%] bg-[linear-gradient(110deg,transparent_38%,color-mix(in_srgb,var(--color-accent)_16%,transparent)_50%,transparent_62%)]" />
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
-            <Pill>
-              <span className="size-1.5 animate-pulse rounded-full bg-accent" />
-              Loading 3D
-            </Pill>
-          </div>
-        </div>
-      )}
+      {!ready && !failed && <LoadingOverlay />}
 
       {/* failed to load — static placeholder */}
       {failed && (
-        <div className="absolute inset-0 z-10 grid place-items-center rounded-3xl bg-surface-2/50">
+        <div className="absolute inset-0 z-10 grid place-items-center rounded-3xl bg-paper-warm/50">
           <Pill tone="faint">
-            <span className="size-1.5 rounded-full bg-faint" />
+            <span className="size-1.5 rounded-full bg-ash" />
             3D model unavailable
           </Pill>
         </div>
@@ -228,6 +209,7 @@ export default function HobbyCanvas({
           </Pill>
         </div>
       )}
+      </StageFrame>
     </div>
   );
 }

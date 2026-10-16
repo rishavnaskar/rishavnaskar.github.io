@@ -1,63 +1,96 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { useRef, useState } from "react";
 import { SITE } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { Arrow, BUTTON_BASE, buttonStyles, type ButtonVariant } from "./ui";
 
 type CalendlyGlobal = { initPopupWidget: (opts: { url: string }) => void };
 
+const WIDGET_JS = "https://assets.calendly.com/assets/external/widget.js";
+const WIDGET_CSS = "https://assets.calendly.com/assets/external/widget.css";
+
 /**
- * Opens the Calendly scheduling popup, lazily loading the widget the first time
- * it's needed. Falls back to opening the link in a new tab if the script is
- * blocked, so booking always works.
+ * Loads Calendly's popup widget once, on demand. Resolves when its global is
+ * ready; rejects if the script is blocked or fails.
+ */
+let widget: Promise<CalendlyGlobal> | null = null;
+function loadWidget(): Promise<CalendlyGlobal> {
+  if (widget) return widget;
+  widget = new Promise((resolve, reject) => {
+    const existing = (window as unknown as { Calendly?: CalendlyGlobal }).Calendly;
+    if (existing?.initPopupWidget) return resolve(existing);
+
+    const css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = WIDGET_CSS;
+    document.head.appendChild(css);
+
+    const js = document.createElement("script");
+    js.src = WIDGET_JS;
+    js.async = true;
+    js.onload = () => {
+      const C = (window as unknown as { Calendly?: CalendlyGlobal }).Calendly;
+      if (C?.initPopupWidget) resolve(C);
+      else reject(new Error("Calendly global missing"));
+    };
+    js.onerror = () => reject(new Error("Calendly widget failed to load"));
+    document.body.appendChild(js);
+  });
+  widget.catch(() => {
+    widget = null; // allow a retry on the next intent
+  });
+  return widget;
+}
+
+/**
+ * Opens the Calendly scheduling popup.
+ *
+ * The widget used to load on mount — a third-party script and stylesheet
+ * fetched by every visitor, on every page load, for a button most never press.
+ * Now it is fetched on intent: hovering, focusing or touching the button warms
+ * it up, so by the time the click lands the popup is usually ready. If it is
+ * not — the script is blocked, or the tap was faster than the network — the
+ * click opens the booking page in a new tab instead, so booking always works.
  */
 export default function CalendlyButton({
   children = "Book a quick call",
   className,
-  variant = "primary",
+  variant = "solid",
 }: {
   children?: React.ReactNode;
   className?: string;
-  variant?: "primary" | "ghost";
+  variant?: ButtonVariant;
 }) {
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState<CalendlyGlobal | null>(null);
+  const warmed = useRef(false);
 
-  useEffect(() => {
-    if (document.getElementById("calendly-widget-js")) {
-      setReady(true);
-      return;
-    }
-    const css = document.createElement("link");
-    css.rel = "stylesheet";
-    css.href = "https://assets.calendly.com/assets/external/widget.css";
-    document.head.appendChild(css);
-
-    const js = document.createElement("script");
-    js.id = "calendly-widget-js";
-    js.src = "https://assets.calendly.com/assets/external/widget.js";
-    js.async = true;
-    js.onload = () => setReady(true);
-    document.body.appendChild(js);
-  }, []);
-
-  const open = () => {
-    const C = (window as unknown as { Calendly?: CalendlyGlobal }).Calendly;
-    if (ready && C?.initPopupWidget) C.initPopupWidget({ url: SITE.calendly });
-    else window.open(SITE.calendly, "_blank", "noopener");
+  const warm = () => {
+    if (warmed.current) return;
+    warmed.current = true;
+    loadWidget().then(setReady, () => {});
   };
 
-  const base =
-    "group inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-display text-sm font-medium transition-all duration-300";
-  const styles =
-    variant === "primary"
-      ? "bg-gradient-to-r from-violet to-violet-bright text-white shadow-[0_12px_30px_-12px_var(--color-violet)] hover:-translate-y-0.5 hover:shadow-[0_20px_40px_-14px_var(--color-violet)]"
-      : "border border-border bg-surface/50 text-fg hover:-translate-y-0.5 hover:border-accent hover:text-accent";
+  const open = () => {
+    if (ready) ready.initPopupWidget({ url: SITE.calendly });
+    else {
+      warm();
+      window.open(SITE.calendly, "_blank", "noopener");
+    }
+  };
 
   return (
-    <button type="button" onClick={open} data-track="book_call" className={cn(base, styles, className)}>
+    <button
+      type="button"
+      onClick={open}
+      onPointerEnter={warm}
+      onFocus={warm}
+      onTouchStart={warm}
+      data-track="book_call"
+      className={cn(BUTTON_BASE, buttonStyles[variant], className)}
+    >
       {children}
-      <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+      <Arrow />
     </button>
   );
 }

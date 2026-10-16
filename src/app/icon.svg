@@ -1,11 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#7c5cff"/>
-      <stop offset="1" stop-color="#22d3ee"/>
-    </linearGradient>
-  </defs>
-  <rect width="64" height="64" rx="16" fill="#060509"/>
-  <rect x="1.5" y="1.5" width="61" height="61" rx="14.5" fill="none" stroke="url(#g)" stroke-width="2" opacity="0.5"/>
-  <text x="32" y="44" font-family="'Space Grotesk', system-ui, sans-serif" font-size="32" font-weight="700" text-anchor="middle" fill="url(#g)">RN</text>
+  <rect width="64" height="64" rx="15" fill="#0b0b0c"/>
+  <g transform="translate(14 14) scale(1.5)">
+    <rect x="0" y="0" width="10.5" height="10.5" rx="2" fill="#f7f6f4" opacity="0.92"/>
+    <rect x="13.5" y="0" width="10.5" height="10.5" rx="2" fill="#f7f6f4" opacity="0.36"/>
+    <rect x="0" y="13.5" width="10.5" height="10.5" rx="2" fill="#f7f6f4" opacity="0.36"/>
+    <rect x="12.9" y="12.9" width="11.6" height="11.6" rx="2.3" fill="#f0521c" transform="rotate(9 18.7 18.7)"/>
+  </g>
 </svg>

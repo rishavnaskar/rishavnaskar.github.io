@@ -1,19 +1,25 @@
 "use client";
 
+/* eslint-disable react-hooks/immutability --
+   three.js is an imperative scene graph: materials, transforms and refs are
+   mutated inside `useFrame`, which runs on the WebGL render loop rather than
+   during a React render. The compiler rules cannot see that boundary. */
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useReducedMotion } from "framer-motion";
-import { useTheme } from "./ThemeProvider";
 
 /* =====================================================================
    HeroScene — a single WebGL context for the hero:
      • an ambient particle nebula behind everything
      • a premium 3D smartphone running an animated "AI agent automation"
-       UI (rendered to a CanvasTexture), with orbiting tool chips and a
-       violet backlight glow
-   The whole rig tilts toward the mouse. The render loop pauses when the
-   hero scrolls off-screen or the tab is hidden, so it costs nothing later.
+       UI (rendered to a CanvasTexture), with orbiting tool chips and an
+       ember backlight glow
+   It sits inside the hero's ink panel, so it renders on a near-black
+   ground in both themes and never has to re-light itself. The whole rig
+   tilts toward the mouse; the render loop pauses when the hero scrolls
+   off-screen or the tab is hidden, so it costs nothing later.
    ===================================================================== */
 
 type Pointer = { x: number; y: number };
@@ -35,9 +41,9 @@ function radialGlowTexture() {
   c.width = c.height = 256;
   const ctx = c.getContext("2d")!;
   const g = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
-  g.addColorStop(0, "rgba(124,92,255,0.9)");
-  g.addColorStop(0.4, "rgba(124,92,255,0.35)");
-  g.addColorStop(1, "rgba(124,92,255,0)");
+  g.addColorStop(0, "rgba(240,82,28,0.85)");
+  g.addColorStop(0.4, "rgba(240,82,28,0.3)");
+  g.addColorStop(1, "rgba(240,82,28,0)");
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, 256, 256);
   const t = new THREE.CanvasTexture(c);
@@ -59,22 +65,37 @@ function iconTexture(emoji: string) {
 }
 
 /* ─────────────────────────── particles ───────────────────────── */
-function Particles({ count, dark }: { count: number; dark: boolean }) {
+
+/** Tiny seeded PRNG (mulberry32): the nebula is laid out once, deterministically,
+    so the memo is pure and the field is identical on every mount. */
+function seeded(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function Particles({ count }: { count: number }) {
   const ref = useRef<THREE.Points>(null!);
   const { positions, colors } = useMemo(() => {
+    const rand = seeded(count * 7919 + 1);
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
-    const cA = new THREE.Color("#7c5cff");
-    const cB = new THREE.Color("#22d3ee");
-    const cC = new THREE.Color("#ff5cab");
+    const cA = new THREE.Color("#f0521c");
+    const cB = new THREE.Color("#ff9d63");
+    const cC = new THREE.Color("#b93714");
     for (let i = 0; i < count; i++) {
-      const r = 4 + Math.random() * 9;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
+      const r = 4 + rand() * 9;
+      const theta = rand() * Math.PI * 2;
+      const phi = Math.acos(2 * rand() - 1);
       positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.7;
       positions[i * 3 + 2] = r * Math.cos(phi) * 0.5 - 3;
-      const t = Math.random();
+      const t = rand();
       const col = t < 0.5 ? cA.clone().lerp(cB, t * 2) : cB.clone().lerp(cC, (t - 0.5) * 2);
       colors[i * 3] = col.r;
       colors[i * 3 + 1] = col.g;
@@ -100,9 +121,9 @@ function Particles({ count, dark }: { count: number; dark: boolean }) {
         size={0.045}
         sizeAttenuation
         transparent
-        opacity={dark ? 0.8 : 0.55}
+        opacity={0.8}
         depthWrite={false}
-        blending={dark ? THREE.AdditiveBlending : THREE.NormalBlending}
+        blending={THREE.AdditiveBlending}
       />
     </points>
   );
@@ -123,12 +144,23 @@ const STEPS = [
   { label: "Send summary email", icon: "✉️" },
 ];
 
-function drawScreen(ctx: CanvasRenderingContext2D, t: number, dark: boolean) {
+/* The phone sits in the hero's ink panel, which stays near-black in both
+   themes, so the screen has exactly one palette. */
+const SCREEN = {
+  bg0: "#0b0b0c",
+  bg1: "#17161a",
+  text: "#f7f6f4",
+  muted: "#8d8c95",
+  card: "#1c1b20",
+  line: "#2a292f",
+  accent: "#ff7a3d",
+  accent2: "#ff9d63",
+};
+
+function drawScreen(ctx: CanvasRenderingContext2D, t: number) {
   const W = SCREEN_W;
   const H = SCREEN_H;
-  const c = dark
-    ? { bg0: "#0a0912", bg1: "#15121f", text: "#f4f2ff", muted: "#8e89a8", card: "#1a1730", line: "#272340", accent: "#9d86ff", accent2: "#34d3ee" }
-    : { bg0: "#ffffff", bg1: "#f1eefb", text: "#15101f", muted: "#6b6680", card: "#f4f2fb", line: "#e6e2f1", accent: "#6b3fff", accent2: "#0a9bc0" };
+  const c = SCREEN;
 
   ctx.clearRect(0, 0, W, H);
   // rounded screen clip
@@ -145,13 +177,13 @@ function drawScreen(ctx: CanvasRenderingContext2D, t: number, dark: boolean) {
 
   // ambient accent blob
   const blob = ctx.createRadialGradient(W * 0.8, 150, 0, W * 0.8, 150, 360);
-  blob.addColorStop(0, dark ? "rgba(124,92,255,0.28)" : "rgba(124,92,255,0.14)");
-  blob.addColorStop(1, "rgba(124,92,255,0)");
+  blob.addColorStop(0, "rgba(240,82,28,0.22)");
+  blob.addColorStop(1, "rgba(240,82,28,0)");
   ctx.fillStyle = blob;
   ctx.fillRect(0, 0, W, H);
 
   // notch
-  ctx.fillStyle = dark ? "#000" : "#0a0912";
+  ctx.fillStyle = "#000";
   roundRect(ctx, W / 2 - 70, 26, 140, 34, 17);
   ctx.fill();
 
@@ -174,14 +206,14 @@ function drawScreen(ctx: CanvasRenderingContext2D, t: number, dark: boolean) {
   const ay = 130;
   const pulse = 0.5 + 0.5 * Math.sin(t * 3);
   const orb = ctx.createRadialGradient(72, ay, 4, 72, ay, 34);
-  orb.addColorStop(0, "#c9b8ff");
+  orb.addColorStop(0, "#ffd0b8");
   orb.addColorStop(0.5, c.accent);
   orb.addColorStop(1, c.accent2);
   ctx.fillStyle = orb;
   ctx.beginPath();
   ctx.arc(72, ay, 30, 0, Math.PI * 2);
   ctx.fill();
-  ctx.strokeStyle = `rgba(157,134,255,${0.5 * pulse})`;
+  ctx.strokeStyle = `rgba(240,82,28,${0.5 * pulse})`;
   ctx.lineWidth = 3;
   ctx.beginPath();
   ctx.arc(72, ay, 30 + pulse * 12, 0, Math.PI * 2);
@@ -213,8 +245,8 @@ function drawScreen(ctx: CanvasRenderingContext2D, t: number, dark: boolean) {
   const uw = ctx.measureText(ub).width + 44;
   const ubx = W - 36 - uw;
   const grad = ctx.createLinearGradient(ubx, 0, ubx + uw, 0);
-  grad.addColorStop(0, "#7c5cff");
-  grad.addColorStop(1, "#9d86ff");
+  grad.addColorStop(0, "#f0521c");
+  grad.addColorStop(1, "#ff7a3d");
   ctx.fillStyle = grad;
   roundRect(ctx, ubx, 224, uw, 60, 24);
   ctx.fill();
@@ -308,8 +340,8 @@ function drawScreen(ctx: CanvasRenderingContext2D, t: number, dark: boolean) {
   ctx.font = "500 24px system-ui, sans-serif";
   ctx.fillText("Ask Stella anything…", 62, iy + 32);
   const sendG = ctx.createLinearGradient(W - 92, 0, W - 52, 0);
-  sendG.addColorStop(0, "#7c5cff");
-  sendG.addColorStop(1, "#22d3ee");
+  sendG.addColorStop(0, "#f0521c");
+  sendG.addColorStop(1, "#ff9d63");
   ctx.fillStyle = sendG;
   ctx.beginPath();
   ctx.arc(W - 70, iy + 32, 22, 0, Math.PI * 2);
@@ -326,7 +358,7 @@ function drawScreen(ctx: CanvasRenderingContext2D, t: number, dark: boolean) {
   ctx.restore();
 }
 
-function Phone({ dark }: { dark: boolean }) {
+function Phone() {
   // phone body — beveled rounded rectangle
   const bodyGeo = useMemo(() => {
     const W = 2.45, H = 5.0, R = 0.4, D = 0.22;
@@ -375,7 +407,7 @@ function Phone({ dark }: { dark: boolean }) {
     acc.current += delta;
     if (acc.current > 1 / 30) {
       acc.current = 0;
-      drawScreen(screen.ctx, t, dark);
+      drawScreen(screen.ctx, t);
       screen.texture.needsUpdate = true;
     }
     // orbit + billboard the tool chips
@@ -391,12 +423,12 @@ function Phone({ dark }: { dark: boolean }) {
     <group>
       {/* backlight halo */}
       <sprite position={[0, 0, -0.6]} scale={[7, 9, 1]}>
-        <spriteMaterial map={glow} transparent depthWrite={false} opacity={dark ? 0.85 : 0.4} blending={THREE.AdditiveBlending} />
+        <spriteMaterial map={glow} transparent depthWrite={false} opacity={0.85} blending={THREE.AdditiveBlending} />
       </sprite>
 
       {/* body */}
       <mesh geometry={bodyGeo} castShadow>
-        <meshStandardMaterial color={dark ? "#111019" : "#e9e7f2"} metalness={0.85} roughness={0.28} />
+        <meshStandardMaterial color="#131316" metalness={0.85} roughness={0.28} />
       </mesh>
 
       {/* screen */}
@@ -408,11 +440,11 @@ function Phone({ dark }: { dark: boolean }) {
       {/* side buttons */}
       <mesh position={[-1.27, 0.7, 0]}>
         <boxGeometry args={[0.06, 0.5, 0.12]} />
-        <meshStandardMaterial color={dark ? "#2a2740" : "#cfcbe0"} metalness={0.8} roughness={0.4} />
+        <meshStandardMaterial color="#2a292f" metalness={0.8} roughness={0.4} />
       </mesh>
       <mesh position={[1.27, 1.0, 0]}>
         <boxGeometry args={[0.06, 0.3, 0.12]} />
-        <meshStandardMaterial color={dark ? "#2a2740" : "#cfcbe0"} metalness={0.8} roughness={0.4} />
+        <meshStandardMaterial color="#2a292f" metalness={0.8} roughness={0.4} />
       </mesh>
 
       {/* orbiting automation tool chips */}
@@ -424,7 +456,7 @@ function Phone({ dark }: { dark: boolean }) {
             <group key={i} position={[Math.cos(a) * rad, Math.sin(a * 1.3) * 0.9 - 0.3, Math.sin(a) * rad]}>
               <mesh>
                 <planeGeometry args={[0.62, 0.62]} />
-                <meshBasicMaterial color={dark ? "#16131f" : "#ffffff"} transparent opacity={0.92} />
+                <meshBasicMaterial color="#17161a" transparent opacity={0.92} />
               </mesh>
               <mesh position={[0, 0, 0.01]}>
                 <planeGeometry args={[0.42, 0.42]} />
@@ -455,14 +487,14 @@ function Rig({ pointer, children }: { pointer: React.RefObject<Pointer>; childre
 }
 
 /* ───────────── places the phone toward the right side ────────── */
-function PhoneAnchor({ pointer, dark }: { pointer: React.RefObject<Pointer>; dark: boolean }) {
+function PhoneAnchor({ pointer }: { pointer: React.RefObject<Pointer> }) {
   const { viewport } = useThree();
-  const x = Math.min(viewport.width * 0.23, 4.2);
-  const scale = Math.min(Math.max(viewport.width / 16, 0.62), 0.92);
+  // Centred: the panel is the frame now, so there is nothing to offset from.
+  const scale = Math.min(Math.max(viewport.width / 11, 0.7), 1.12);
   return (
-    <group position={[x, 0.1, 0]} scale={scale}>
+    <group position={[0, 0.05, 0]} scale={scale}>
       <Rig pointer={pointer}>
-        <Phone dark={dark} />
+        <Phone />
       </Rig>
     </group>
   );
@@ -471,12 +503,9 @@ function PhoneAnchor({ pointer, dark }: { pointer: React.RefObject<Pointer>; dar
 /* ───────────────────────── scene root ────────────────────────── */
 export default function HeroScene() {
   const reduce = useReducedMotion();
-  const { theme } = useTheme();
-  const dark = theme === "dark";
   const wrapRef = useRef<HTMLDivElement>(null);
   const pointer = useRef<Pointer>({ x: 0, y: 0 });
   const [active, setActive] = useState(true);
-  const [showPhone, setShowPhone] = useState(false);
   const [particleCount, setParticleCount] = useState(220);
 
   useEffect(() => {
@@ -491,10 +520,7 @@ export default function HeroScene() {
   }, []);
 
   useEffect(() => {
-    const update = () => {
-      setShowPhone(window.innerWidth >= 1024);
-      setParticleCount(window.innerWidth < 768 ? 130 : 220);
-    };
+    const update = () => setParticleCount(window.innerWidth < 1280 ? 150 : 220);
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
@@ -515,21 +541,23 @@ export default function HeroScene() {
 
   if (reduce) return null;
 
+  /* The panel behind this is ink in both themes, so the scene is lit for a
+     dark ground unconditionally — there is no light variant to switch to. */
   return (
-    <div ref={wrapRef} className="pointer-events-none absolute inset-0 -z-10" aria-hidden>
+    <div ref={wrapRef} className="pointer-events-none absolute inset-0" aria-hidden>
       <Canvas
         camera={{ position: [0, 0, 11], fov: 38 }}
         dpr={[1, 1.6]}
         frameloop={active ? "always" : "never"}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       >
-        <ambientLight intensity={dark ? 0.6 : 1.1} />
-        <directionalLight position={[5, 6, 8]} intensity={dark ? 1.4 : 1.8} />
-        <pointLight position={[-6, -2, 4]} intensity={dark ? 40 : 20} color="#7c5cff" />
-        <pointLight position={[6, 4, 6]} intensity={dark ? 22 : 12} color="#22d3ee" />
-        <Particles count={particleCount} dark={dark} />
-        {showPhone && <PhoneAnchor pointer={pointer} dark={dark} />}
-        <fog attach="fog" args={[dark ? "#060509" : "#f6f5fb", 12, 26]} />
+        <ambientLight intensity={0.62} />
+        <directionalLight position={[5, 6, 8]} intensity={1.45} />
+        <pointLight position={[-6, -2, 4]} intensity={40} color="#f0521c" />
+        <pointLight position={[6, 4, 6]} intensity={22} color="#ff9d63" />
+        <Particles count={particleCount} />
+        <PhoneAnchor pointer={pointer} />
+        <fog attach="fog" args={["#0b0b0c", 13, 30]} />
       </Canvas>
     </div>
   );

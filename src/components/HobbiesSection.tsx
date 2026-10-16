@@ -1,41 +1,42 @@
-import Reveal from "./Reveal";
-import SectionHeading from "./SectionHeading";
-import ModelViewer from "./hobbies/ModelViewer";
+import { Rise, SectionHead } from "./ui";
+import HobbyModel from "./hobbies/HobbyModel";
 import { MODEL_URLS, MODEL_CONFIG } from "@/lib/models";
 
-function Caption({ title, note, credit }: { title: string; note: string; credit?: React.ReactNode }) {
+function Caption({ title, note }: { title: string; note: string }) {
   return (
-    <div className="mt-5 text-center">
-      <h3 className="font-display text-lg font-semibold">{title}</h3>
-      <p className="mt-1 text-sm text-muted">{note}</p>
-      {credit ? <p className="mt-1.5 text-[0.65rem] text-faint">{credit}</p> : null}
+    <div className="mt-4 flex items-baseline justify-between gap-4 border-t border-paper-line pt-4">
+      <h3 className="text-[1.05rem] tracking-[-0.02em]">{title}</h3>
+      <p className="text-right text-[0.82rem] text-graphite">{note}</p>
     </div>
   );
 }
 
 export default function HobbiesSection() {
   return (
-    <section id="hobbies" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-20 lg:px-8 lg:py-28">
-      <SectionHeading
-        eyebrow="07 — Off the clock"
-        title="Two things that keep me"
-        accent="grounded."
-        sub="When I’m not shipping, I’m on a long drive or behind a kit. Both rendered here in real-time 3D — drag them around, spin them, go nuts."
-      />
+    <section
+      id="hobbies"
+      className="relative scroll-mt-24 border-t border-paper-line bg-paper-warm/50 py-14 sm:py-20 lg:py-24"
+    >
+      <div className="shell">
+        <SectionHead
+          eyebrow="06 — Off the clock"
+          headline="Two things that keep me grounded."
+          lede="A long drive or an hour behind the kit. Both rendered here in real-time 3D — drag them around and spin them."
+        />
 
-      <div className="grid gap-12 lg:grid-cols-2 lg:gap-8">
-        <Reveal>
-          <ModelViewer url={MODEL_URLS.car} {...MODEL_CONFIG.car} />
-          <Caption
-            title="Driving"
-            note="My Honda Fit — I call her Melissa."
-          />
-        </Reveal>
+        {/* Side by side from `sm`: stacked, two 4:3 stages at tablet width were
+            a screen and a half of canvas. */}
+        <div className="mt-10 grid gap-8 sm:mt-14 sm:grid-cols-2 sm:gap-5 lg:gap-6">
+          <Rise>
+            <HobbyModel url={MODEL_URLS.car} {...MODEL_CONFIG.car} />
+            <Caption title="Driving" note="My Honda Fit — I call her Melissa." />
+          </Rise>
 
-        <Reveal delay={0.1}>
-          <ModelViewer url={MODEL_URLS.drums} {...MODEL_CONFIG.drums} />
-          <Caption title="Drumming" note="12 years behind the kit." />
-        </Reveal>
+          <Rise delay={1}>
+            <HobbyModel url={MODEL_URLS.drums} {...MODEL_CONFIG.drums} />
+            <Caption title="Drumming" note="12 years behind the kit." />
+          </Rise>
+        </div>
       </div>
     </section>
   );

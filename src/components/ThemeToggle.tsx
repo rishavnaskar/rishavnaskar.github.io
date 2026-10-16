@@ -1,10 +1,22 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { Moon, Sun } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useTheme } from "./ThemeProvider";
 
-export default function ThemeToggle({ className }: { className?: string }) {
+/**
+ * Sun/moon switch. `onDark` inverts it while the bar sits over an ink band.
+ *
+ * Both icons are always in the DOM; which one shows is decided in CSS from
+ * `data-theme` (see globals.css), so the button is correct at first paint
+ * instead of swapping once React works out the real theme.
+ */
+export default function ThemeToggle({
+  className,
+  onDark = false,
+}: {
+  className?: string;
+  onDark?: boolean;
+}) {
   const { theme, toggle } = useTheme();
 
   return (
@@ -12,23 +24,39 @@ export default function ThemeToggle({ className }: { className?: string }) {
       type="button"
       onClick={toggle}
       aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
-      className={
-        "relative grid size-10 place-items-center overflow-hidden rounded-full border border-border bg-surface/60 text-muted transition-colors hover:border-accent hover:text-accent " +
-        (className ?? "")
-      }
+      className={cn(
+        "relative grid size-10 place-items-center overflow-hidden rounded-full border transition-colors",
+        onDark
+          ? "border-white/15 text-white/60 hover:border-white/35 hover:text-white"
+          : "border-paper-line text-graphite hover:border-fg/35 hover:text-fg",
+        className,
+      )}
     >
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.span
-          key={theme}
-          initial={{ y: -16, opacity: 0, rotate: -90 }}
-          animate={{ y: 0, opacity: 1, rotate: 0 }}
-          exit={{ y: 16, opacity: 0, rotate: 90 }}
-          transition={{ duration: 0.25 }}
-          className="absolute"
-        >
-          {theme === "dark" ? <Moon className="size-[18px]" /> : <Sun className="size-[18px]" />}
-        </motion.span>
-      </AnimatePresence>
+      <svg
+        aria-hidden
+        viewBox="0 0 24 24"
+        className="theme-icon theme-icon-moon size-[17px]"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M20.5 14.2A8.5 8.5 0 019.8 3.5a8.5 8.5 0 1010.7 10.7z" />
+      </svg>
+      <svg
+        aria-hidden
+        viewBox="0 0 24 24"
+        className="theme-icon theme-icon-sun size-[17px]"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="12" r="4.2" />
+        <path d="M12 2.4v2.2M12 19.4v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6" />
+      </svg>
     </button>
   );
 }

@@ -1,222 +1,487 @@
 @import "tailwindcss";
 
-/* ─────────────────────────────────────────────────────────────
-   Design tokens (Tailwind v4 @theme). Defaults below are the DARK
-   theme; light values are overridden further down by [data-theme]
-   and prefers-color-scheme. Because Tailwind utilities reference
-   these as var(--color-*), the overrides re-theme the whole site
-   at runtime with zero extra classes.
-   ───────────────────────────────────────────────────────────── */
+/* ═════════════════════════════════════════════════════════════════
+   DESIGN SYSTEM — "paper & ink"
+
+   An editorial, print-derived system: a warm off-white page, near-black
+   inverted bands that carry the argument, one ember accent, and a
+   monospaced eyebrow labelling every section.
+
+   Two surface families, and every colour decision reduces to which one
+   you are on:
+
+     paper  — the page. Light in the light theme, charcoal in the dark
+              one. Text on it is `fg` / `graphite` / `ash`.
+     ink    — the inverted band. Near-black in BOTH themes, so the
+              light/dark alternation that drives the page survives the
+              theme toggle. Text on it is `on-ink`, or white at an opacity.
+
+   `fg` and `paper` are always opposites, in either theme, which is what
+   makes `bg-fg text-paper` a button that inverts correctly for free.
+
+   Because Tailwind v4 utilities compile to `var(--color-*)`, re-pointing
+   these variables under `[data-theme]` re-themes the entire site with no
+   extra classes anywhere.
+   ═════════════════════════════════════════════════════════════════ */
+
 @theme {
-  /* brand accents — constant across themes */
-  --color-violet: #7c5cff;
-  --color-violet-bright: #9d86ff;
-  --color-cyan: #22d3ee;
-  --color-magenta: #ff5cab;
-  --color-lime: #b6ff5c;
+  /* ---- Surfaces — LIGHT defaults ----------------------------------- */
+  --color-paper: #f7f6f4;
+  --color-paper-warm: #efece7;
+  --color-paper-line: #e3dfd8;
+  --color-paper-raised: #ffffff;
 
-  /* semantic (DARK defaults) */
-  --color-bg: #060509;
-  --color-bg-soft: #0c0b12;
-  --color-surface: #131120;
-  --color-surface-2: #1a1726;
-  --color-border: #221f33;
-  --color-fg: #f4f2ff;
-  --color-muted: #b8b4cc;
-  --color-faint: #7d7894;
-  --color-accent: #9d86ff;
-  --color-accent-2: #22d3ee;
+  --color-ink: #0b0b0c;
+  --color-ink-soft: #131316;
+  --color-ink-line: #1e1e22;
+  /* The light foreground that sits ON ink. Distinct from `paper` on purpose:
+     `paper` is the page, and the page goes dark with the theme, but the ink
+     bands stay dark in both themes — so text on them has to stay light. Using
+     `paper` for both roles is what turns every heading inside an ink band
+     invisible the moment the theme flips. */
+  --color-on-ink: #f7f6f4;
 
-  --font-display: var(--font-space), "Space Grotesk", system-ui, sans-serif;
-  --font-sans: var(--font-inter), Inter, system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
+  /* ---- Ember accent — constant across themes ----------------------- */
+  --color-ember: #f0521c;
+  --color-ember-lit: #ff7a3d;
+  --color-ember-deep: #b93714;
 
-  --animate-marquee: marquee 38s linear infinite;
+  /* ---- Text on paper ----------------------------------------------- */
+  --color-fg: #0b0b0c;
+  --color-graphite: #4c4c52;
+  /* The lightest value that still clears the 4.5:1 AA floor against both
+     `paper` and `paper-warm` — every use is on a light surface. */
+  --color-ash: #68686f;
+
+
+  --font-sans: var(--font-host), "Host Grotesk", "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --ease-forge: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-marquee: marquee 42s linear infinite;
   --animate-shimmer: shimmer 2.6s linear infinite;
-  --animate-float: float 8s ease-in-out infinite;
   --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
-  --animate-scrollwheel: scrollwheel 1.8s ease-in-out infinite;
   --animate-blink: blink 1.1s steps(1) infinite;
-  --animate-typing-dot: typing-dot 1.2s ease-in-out infinite;
 
   @keyframes marquee {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
   }
+  @keyframes marquee-rev {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+  }
   @keyframes shimmer {
     from { background-position: -200% center; }
     to { background-position: 200% center; }
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-14px); }
   }
   @keyframes pulse-ring {
     0% { transform: scale(1); opacity: 0.6; }
     80%, 100% { transform: scale(2.2); opacity: 0; }
   }
-  @keyframes scrollwheel {
-    0% { opacity: 0; transform: translate(-50%, 0); }
-    30% { opacity: 1; }
-    60% { opacity: 1; transform: translate(-50%, 10px); }
-    100% { opacity: 0; transform: translate(-50%, 10px); }
-  }
   @keyframes blink {
     0%, 50% { opacity: 1; }
     50.01%, 100% { opacity: 0; }
   }
-  @keyframes typing-dot {
-    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-    30% { transform: translateY(-4px); opacity: 1; }
+  @keyframes rise-in {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes clip-rise {
+    from { transform: translateY(108%); }
+    to { transform: none; }
   }
 }
 
-/* ── LIGHT theme overrides ──────────────────────────────────── */
-:root[data-theme="light"] {
-  --color-bg: #f6f5fb;
-  --color-bg-soft: #ffffff;
-  --color-surface: #ffffff;
-  --color-surface-2: #f0eef8;
-  --color-border: #e4e1ef;
-  --color-fg: #14101e;
-  --color-muted: #4a4560;
-  --color-faint: #837e96;
-  --color-accent: #6b3fff;
-  --color-accent-2: #0891b2;
+/* ── DARK theme ───────────────────────────────────────────────────
+   `paper` drops to charcoal; `ink` drops *below* it to near-black, so
+   the inverted bands still read as inverted rather than as the same
+   flat black as everything else. */
+:root[data-theme="dark"] {
+  --color-paper: #111013;
+  --color-paper-warm: #17161b;
+  --color-paper-line: #26252c;
+  --color-paper-raised: #1a191f;
+
+  --color-ink: #08070a;
+  --color-ink-soft: #0e0d11;
+  --color-ink-line: #1c1b21;
+  --color-on-ink: #f2f1ee;
+
+  /* The deep ember is tuned for small labels on paper; on a dark page it
+     drops to roughly 3:1, so the eyebrows lift to the lit tone instead. */
+  --color-ember-deep: #ff7a3d;
+
+  --color-fg: #f2f1ee;
+  --color-graphite: #a5a3ac;
+  --color-ash: #87858e;
+
+  color-scheme: dark;
 }
-/* Auto: honour OS preference unless the user has chosen a theme */
-@media (prefers-color-scheme: light) {
+
+/* Honour the OS preference until the visitor picks a theme themselves. */
+@media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --color-bg: #f6f5fb;
-    --color-bg-soft: #ffffff;
-    --color-surface: #ffffff;
-    --color-surface-2: #f0eef8;
-    --color-border: #e4e1ef;
-    --color-fg: #14101e;
-    --color-muted: #4a4560;
-    --color-faint: #837e96;
-    --color-accent: #6b3fff;
-    --color-accent-2: #0891b2;
+    --color-paper: #111013;
+    --color-paper-warm: #17161b;
+    --color-paper-line: #26252c;
+    --color-paper-raised: #1a191f;
+
+    --color-ink: #08070a;
+    --color-ink-soft: #0e0d11;
+    --color-ink-line: #1c1b21;
+    --color-on-ink: #f2f1ee;
+    --color-ember-deep: #ff7a3d;
+
+    --color-fg: #f2f1ee;
+    --color-graphite: #a5a3ac;
+    --color-ash: #87858e;
+
+    color-scheme: dark;
   }
 }
 
-html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
+:root {
+  --shell: 1200px;
+  --gutter: 20px;
+  color-scheme: light;
 }
 
-body {
-  background-color: var(--color-bg);
-  color: var(--color-fg);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  overflow-x: hidden;
-  transition: background-color 0.5s ease, color 0.5s ease;
+@media (min-width: 640px) {
+  :root {
+    --gutter: 28px;
+  }
 }
 
-::selection {
-  background: var(--color-violet);
-  color: #fff;
+/* ── base ─────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    border-color: var(--color-paper-line);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-weight: 500;
+    letter-spacing: -0.032em;
+    line-height: 0.98;
+    text-wrap: balance;
+  }
+
+  h3, h4 {
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  ::selection {
+    background: var(--color-ember);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--color-paper); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-paper-line);
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-ember); }
 }
 
-/* slim themed scrollbar */
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: var(--color-bg); }
-::-webkit-scrollbar-thumb { background: var(--color-surface-2); border-radius: 8px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-violet); }
+/* ── layout & type primitives ─────────────────────────────────────── */
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: var(--shell);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
 
-/* ── reusable utilities ─────────────────────────────────────── */
-@utility text-gradient {
-  background: linear-gradient(110deg, var(--color-fg) 8%, var(--color-accent) 50%, var(--color-accent-2) 92%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  /* Small monospaced label that names every section. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .display-xl {
+    /* Capped so the longest hero line still sets on ONE line inside the copy
+       column. A `.clip-line` that wraps splits the phrase across two clip
+       windows and reveals half of it on its own, which reads as a bug. */
+    font-size: clamp(2.7rem, 6.3vw, 5.1rem);
+    letter-spacing: -0.045em;
+    line-height: 0.93;
+  }
+
+  .display-lg {
+    font-size: clamp(2.15rem, 5vw, 3.8rem);
+    letter-spacing: -0.038em;
+    line-height: 0.98;
+  }
+
+
+  .lede {
+    font-size: clamp(1rem, 1.3vw, 1.18rem);
+    line-height: 1.55;
+    color: var(--color-graphite);
+    text-wrap: pretty;
+  }
+
+  /**
+   * Below `sm`, turn a card grid into a horizontal snap rail.
+   *
+   * A row of four to eight cards stacks to three or more phone screens,
+   * which is most of what makes a portfolio scroll forever. As a rail it
+   * costs one screen, and the next card is left peeking as the swipe
+   * affordance. Sections keep their own `sm:` grid utilities for wider
+   * screens — those live in the utilities layer, so they win over these
+   * declarations without needing `!important`.
+   */
+  .rail-m,
+  .rail-md {
+    display: flex;
+    gap: 0.75rem;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    padding-bottom: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    /* `padding-inline` alone only insets the *initial* position — a snap
+       point aligns to the scrollport edge, which ignores padding. This is
+       what keeps the gutter at rest AND on every snap. */
+    scroll-padding-inline: var(--gutter);
+  }
+
+  .rail-m::-webkit-scrollbar,
+  .rail-md::-webkit-scrollbar { display: none; }
+
+  .rail-m > *,
+  .rail-md > * {
+    flex: 0 0 80%;
+    scroll-snap-align: start;
+  }
+
+  @media (min-width: 640px) {
+    .rail-m {
+      margin-inline: 0;
+      padding-inline: 0;
+      padding-bottom: 0;
+      overflow-x: visible;
+      scroll-snap-type: none;
+    }
+    .rail-m > * { flex: initial; }
+  }
+
+  /* `rail-md` is the same rail, held until `md` — for rows whose cards cannot
+     shrink below ~220px (the device mockups), where a two-column grid at `sm`
+     would leave a third card orphaned on its own row. */
+  @media (min-width: 768px) {
+    .rail-md {
+      margin-inline: 0;
+      padding-inline: 0;
+      padding-bottom: 0;
+      overflow-x: visible;
+      scroll-snap-type: none;
+    }
+    .rail-md > * { flex: initial; }
+  }
+
 }
 
-@utility text-gradient-accent {
-  background: linear-gradient(120deg, var(--color-accent), var(--color-accent-2));
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+/* ── backdrops ────────────────────────────────────────────────────── */
+
+/* Dotted field behind the light sections. */
+.dots {
+  background-image: radial-gradient(
+    color-mix(in oklab, var(--color-fg) 13%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
 }
 
-@utility text-shimmer {
-  background: linear-gradient(110deg, var(--color-fg) 35%, var(--color-accent) 50%, var(--color-fg) 65%);
-  background-size: 200% auto;
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  animation: var(--animate-shimmer);
-}
-
-@utility glass {
-  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border: 1px solid var(--color-border);
-}
-
-@utility ring-glow {
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--color-violet) 35%, transparent),
-    0 0 46px -10px color-mix(in srgb, var(--color-violet) 60%, transparent);
-}
-
-@utility card {
-  background: color-mix(in srgb, var(--color-surface) 60%, transparent);
-  border: 1px solid var(--color-border);
-}
-
-@utility contact-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  border-radius: 9999px;
-  border: 1px solid var(--color-border);
-  background: color-mix(in srgb, var(--color-surface) 50%, transparent);
-  padding: 0.6rem 1rem;
-  font-size: 0.875rem;
-  transition: transform 0.3s, border-color 0.3s, color 0.3s;
-}
-.contact-chip:hover {
-  transform: translateY(-2px);
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-/* faint dotted grid backdrop, masked toward the top */
-.grid-bg {
+/* Blueprint line grid — hero and inverted bands. */
+.grid-paper {
   background-image:
-    linear-gradient(color-mix(in srgb, var(--color-fg) 4%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--color-fg) 4%, transparent) 1px, transparent 1px);
-  background-size: 64px 64px;
-  -webkit-mask-image: radial-gradient(ellipse 100% 60% at 50% 0%, #000 30%, transparent 78%);
-  mask-image: radial-gradient(ellipse 100% 60% at 50% 0%, #000 30%, transparent 78%);
+    linear-gradient(to right, color-mix(in oklab, var(--color-fg) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--color-fg) 5%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
 }
 
-/* filmic grain — single fixed layer, cheap to composite */
-.grain::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 80;
-  opacity: 0.035;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+.grid-paper-dark {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.mask-fade-b {
+  -webkit-mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
+}
+
+.mask-fade-x {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+}
+
+/*
+ * Above-the-fold entrance, in CSS rather than through Motion.
+ *
+ * Motion renders its `initial` state into the static HTML, so an element
+ * with `initial={{ opacity: 0 }}` ships as `style="opacity:0"` and stays
+ * invisible until React hydrates. Chrome does not count an opacity-0
+ * element as painted, so on a throttled phone that pushes Largest
+ * Contentful Paint out by the whole hydration cost.
+ *
+ * A CSS animation starts at first paint with no JavaScript involved. Use
+ * this above the fold; Motion's `whileInView` is still the right tool
+ * below it, where the delay is real scrolling rather than boot time.
+ */
+.rise-in {
+  animation: rise-in 0.55s var(--ease-forge) both;
+}
+
+/*
+ * Scroll reveals, in CSS, with the resting state VISIBLE.
+ *
+ * The obvious implementation — a Motion component with `initial={{opacity:0}}`
+ * — renders that initial state into the exported HTML, so every revealed
+ * element ships as `style="opacity:0"` and stays unpainted until React
+ * hydrates. On a static site that is a page which is blank below the fold for
+ * as long as the JS takes, and permanently blank if the JS never arrives.
+ *
+ * So the markup carries no hidden state at all. After hydration, JS arms only
+ * the elements that are still below the fold (`.reveal`), and the observer
+ * plays them (`.is-in`) as they come up. Nothing on screen is ever hidden
+ * retroactively, and with JS off the page simply reads.
+ */
+.reveal { opacity: 0; }
+
+.reveal.is-in {
+  animation: rise-in 0.7s var(--ease-forge) both;
+  animation-delay: calc(var(--i, 0) * 0.07s);
+}
+
+/* Headlines that clip upward into place, line by line. Same arming rule; the
+   hero opts into `.clip-eager` instead, which runs at first paint because
+   above the fold there is nothing to wait for. */
+.clip-row {
+  display: block;
+  /* The clip window has to reach below the baseline or descenders lose their
+     tails: the display sizes set line-height 0.93, so a `g` or `y` hangs well
+     outside its line box and `overflow-hidden` shears it off. The negative
+     margin hands that extra room back to the layout, so lines sit at exactly
+     the spacing they otherwise would — only the clip rectangle grew. */
+  overflow: hidden;
+  padding-bottom: 0.22em;
+  margin-bottom: -0.16em;
+}
+
+.clip-line { display: block; }
+
+.clip-armed .clip-line { transform: translateY(108%); }
+
+.clip-armed.is-in .clip-line,
+.clip-eager .clip-line {
+  animation: clip-rise 0.9s var(--ease-forge) both;
+  animation-delay: calc(var(--clip-delay, 0s) + var(--i, 0) * 0.085s);
+}
+.rise-in-delay-1 { animation-delay: 0.12s; }
+.rise-in-delay-2 { animation-delay: 0.26s; }
+.rise-in-delay-3 { animation-delay: 0.38s; }
+
+/*
+ * Theme toggle icon, switched in CSS rather than React state.
+ *
+ * Driving it from state meant the provider rendered "dark" on the server,
+ * corrected itself after mount, and the toggle played a visible moon→sun
+ * swap on every first load. Keyed off `data-theme` (and the OS preference
+ * until the visitor has chosen) it is simply correct at first paint.
+ */
+.theme-icon {
+  position: absolute;
+  transition: opacity 0.25s var(--ease-forge), transform 0.25s var(--ease-forge);
+}
+
+.theme-icon-sun {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.6);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .theme-icon-moon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.6);
+  }
+  :root:not([data-theme]) .theme-icon-sun {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+:root[data-theme="light"] .theme-icon-moon {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.6);
+}
+
+:root[data-theme="light"] .theme-icon-sun {
+  opacity: 1;
+  transform: none;
+}
+
+:root[data-theme="dark"] .theme-icon-moon {
+  opacity: 1;
+  transform: none;
+}
+
+:root[data-theme="dark"] .theme-icon-sun {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.6);
+}
+
+.marquee-track {
+  animation: var(--animate-marquee);
+}
+
+/* Second row, running the other way — the counter-motion is what stops a
+   two-row ticker reading as one thick sliding block. */
+.marquee-track-rev {
+  animation: marquee-rev 54s linear infinite;
+}
+
+/* Anchors scroll smoothly, natively — no scroll-hijacking library. */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .marquee-track,
+  .marquee-track-rev { animation: none; }
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.001ms !important;
   }
 }
 
 @media print {
-  .grain::after, .no-print { display: none !important; }
+  .no-print { display: none !important; }
   body { background: #fff; color: #000; }
 }
