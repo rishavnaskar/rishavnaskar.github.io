@@ -32,7 +32,10 @@ const worker = {
     const url = new URL(request.url);
     const upstream = new URL(url.pathname + url.search, ORIGIN);
     // Next fingerprints everything under /_next/static, so it never changes
-    // in place — cache it for a year. Pages keep GitHub's own 10-minute TTL.
+    // in place: cache successful responses at the edge for a year (never a
+    // 404 or 5xx). Everything else skips Cloudflare's cache and keeps GitHub's
+    // own headers. Otherwise the zone's 4-hour browser TTL would replace them
+    // and this host would lag github.io by hours after every deploy.
     const immutable = url.pathname.startsWith("/_next/static/");
 
     const headers = new Headers();
@@ -41,12 +44,17 @@ const worker = {
       if (value) headers.set(name, value);
     }
 
-    const res = await fetch(upstream, {
-      method: request.method,
-      headers,
-      redirect: "manual",
-      cf: immutable ? { cacheEverything: true, cacheTtl: YEAR } : { cacheEverything: true },
-    });
+    const res = await fetch(
+      upstream,
+      immutable
+        ? {
+            method: request.method,
+            headers,
+            redirect: "manual",
+            cf: { cacheEverything: true, cacheTtlByStatus: { "200-299": YEAR, "300-599": 0 } },
+          }
+        : { method: request.method, headers, redirect: "manual", cache: "no-store" },
+    );
 
     const out = new Headers(res.headers);
     for (const name of STRIP) out.delete(name);
@@ -63,7 +71,7 @@ const worker = {
       }
     }
 
-    if (immutable && res.ok) out.set("cache-control", `public, max-age=${YEAR}, immutable`);
+    if (immutable) out.set("cache-control", res.ok ? `public, max-age=${YEAR}, immutable` : "no-store");
     out.set("x-content-type-options", "nosniff");
     out.set("referrer-policy", "strict-origin-when-cross-origin");
 
