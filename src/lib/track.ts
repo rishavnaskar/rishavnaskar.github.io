@@ -13,8 +13,8 @@
 
 export const GA_ID = "G-REMG8GHJW1";
 
-/** Hosts on which analytics is active. Add a custom domain here later. */
-const TRACKED_HOSTS = ["rishavnaskar.github.io"];
+/** Hosts on which analytics is active — GitHub Pages and the BuildForge mirror. */
+const TRACKED_HOSTS = ["rishavnaskar.github.io", "rishavnaskar.buildforge.top"];
 
 declare global {
   interface Window {

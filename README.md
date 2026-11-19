@@ -61,6 +61,8 @@ The page is long in content and short in scroll, on purpose:
 
 Pushing to `master` runs `.github/workflows/deploy.yml`, which builds the static export and publishes `./out` to GitHub Pages. `robots.txt`, `sitemap.xml` and the manifest are generated at build time.
 
+The site is also served at [rishavnaskar.buildforge.top](https://rishavnaskar.buildforge.top) by a small Cloudflare Worker (`edge/`) that fronts the GitHub Pages build. A push to `master` updates both domains, so there is nothing extra to deploy. Run `npm run deploy:edge` only when `edge/worker.js` or `edge/wrangler.jsonc` changes. Canonical URLs stay on github.io.
+
 ---
 
 © Rishav Naskar · Bengaluru, India

@@ -1,0 +1,15 @@
+{
+  // Fronts the GitHub Pages build at rishavnaskar.buildforge.top — see
+  // worker.js. Deploy with `npm run deploy:edge` from the repo root.
+  "name": "rishavnaskar-portfolio",
+  "main": "worker.js",
+  "compatibility_date": "2026-11-01",
+
+  // Only the custom domain serves this; no *.workers.dev or preview URLs.
+  "workers_dev": false,
+  "preview_urls": false,
+
+  // Wrangler creates the DNS record and certificate on the buildforge.top
+  // zone for a custom domain, so nothing has to be set up by hand.
+  "routes": [{ "pattern": "rishavnaskar.buildforge.top", "custom_domain": true }]
+}
